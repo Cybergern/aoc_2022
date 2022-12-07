@@ -9,8 +9,7 @@ def file_split(lines):
         line = lines[i]
         if (line.startswith(" 1")):
             column_start = i
-            break
-    return lines[:column_start], lines[column_start].strip(), lines[column_start+2:]
+            return lines[:column_start], lines[column_start].strip(), lines[column_start+2:]
 
 def add_stack_values(line, stacks):
     pos = 1
