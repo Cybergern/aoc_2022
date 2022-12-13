@@ -17,7 +17,7 @@ def compare(item1, item2):
         item2 = [item2]
     if len(item1) == 0 and len(item2) > 0:
         return -1
-    elif len(item2) == 0 and len(item1) > 0:
+    if len(item2) == 0 and len(item1) > 0:
         return 1
     else:
         for i in range(0, len(item1)):
@@ -31,23 +31,15 @@ def compare(item1, item2):
         else:
             return -1
 
-with open(input_file, "r") as file:
-    map = []
-    pairs = []
-    pair = []
-    for line in file.readlines():
-        if line.strip() == "":
-            pairs.append((pair[0], pair[1]))
-            pair = []
-        else:
-            pair.append(eval(line.strip()))
-    pairs.append((pair[0], pair[1]))
+def part_1(pairs):
     sum = 0
     print([compare(*x) for x in pairs])
     for i, item in enumerate([compare(*x) for x in pairs]):
         if item == -1:
             sum += (i + 1)
-    print(sum)
+    return sum
+
+def part_2(pairs):
     flat_list = []
     for pair in pairs:
         flat_list.append(pair[0])
@@ -59,4 +51,19 @@ with open(input_file, "r") as file:
     for i, item in enumerate(sorted_list):
         if str(item) in ["[[2]]", "[[6]]"]:
             decoder_key *= (i + 1)
+    return decoder_key
+
+with open(input_file, "r") as file:
+    pairs = []
+    pair = []
+    for line in file.readlines():
+        if line.strip() == "":
+            pairs.append((pair[0], pair[1]))
+            pair = []
+        else:
+            pair.append(eval(line.strip()))
+    pairs.append((pair[0], pair[1]))
+    sum = part_1(pairs)
+    print(sum)
+    decoder_key = part_2(pairs)
     print(decoder_key)
