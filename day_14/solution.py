@@ -49,17 +49,16 @@ def draw_map(map, sand):
         print(line)
 
 def get_free(sand, map, sand_map, bottom=0):
-    full_map = map.union(sand_map)
     straight_down = (sand[0], sand[1] + 1)
     down_left = (sand[0] - 1, sand[1] + 1)
     down_right = (sand[0] + 1, sand[1] + 1)
     if bottom != 0 and sand[1] + 1 == bottom:
         return None
-    if straight_down not in full_map:
+    if straight_down not in map and straight_down not in sand_map:
         return straight_down
-    elif down_left not in full_map:
+    elif down_left not in map and down_left not in sand_map:
         return down_left
-    elif down_right not in full_map:
+    elif down_right not in map and down_right not in sand_map:
         return down_right
     else:
         return None
