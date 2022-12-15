@@ -92,10 +92,6 @@ with open(input_file, "r") as file:
     while(current_sand != (500, 0)):
         current_sand = drop_sand(map, sand, bottom_right[1] + 2, bottomless=False)
         sand.add(current_sand)
-        if len(sand) % 1000 == 0:
-            print(len(sand))
-            draw_map(map, sand)
-
     sand.add(current_sand)
     draw_map(map, sand)
     print(len(sand))
