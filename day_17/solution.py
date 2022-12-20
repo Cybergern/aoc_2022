@@ -148,4 +148,13 @@ with open(input_file, "r") as file:
         last_height = high_block
     print(get_highest_block(map) + 1)
     print(sequence)
-    
+
+    # Bit of an explanation here. I actually didn't solve this one entierely in code.
+    # First took the produced sequence for 10000 blocks, put it in a text editor, marked a long
+    # sequence from the back of the sequence and searched for it, found it at 1740 column intervals
+    # so then we have the size of the sequence. Then used sequence_finder.py to get the actual sequence and the associated sum.
+    # Used this to find the size and then sum of the preamble to the repeating sequence. Finally, used modulo to determine
+    # how much of the final iteration of the sequence was left at the end of the final sequence and got the sum of that
+    # partial sequence to add at the end. Finally added one just because my height is 0-based. Final expression:
+
+    # 2892 + (2759/1740) * (1000000000000 - 1819 - 1101) + 1744 + 1
