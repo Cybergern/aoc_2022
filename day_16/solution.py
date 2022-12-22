@@ -2,7 +2,7 @@ import math
 import re
 from itertools import permutations
 
-input_file = "day_16/example.data"
+input_file = "day_16/input.data"
 
 input_pattern = re.compile('^Valve ([A-Z]+) has flow rate=([0-9]+); tunnel[s]? lead[s]? to valve[s]? ([A-Z, ]+)')
 dijkstra_distances_cache = {}
@@ -50,33 +50,14 @@ def get_best_path(current, remaining_time, opened_valves, valves, total, path):
     best = max(paths.keys())
     return paths[best], best
 
-def get_complimentary(part, full):
-    return [x for x in full if x not in list(part)]
-
-def get_pressure(path, time_left, valves):
-    cur = "AA"
-    distances, _ = dijkstras(cur, valves)
-    sum = 0
-    for p in path:
-        time_left -= distances[p] + 1
-        sum += time_left * valves[p]["flow_rate"]
-        distances, _ = dijkstras(p, valves)
-    return sum
-
-def calculate_pressure(part, full, time_left, valves):
-    other_part = get_complimentary(part, full)
-    all_combos = permutations(other_part)
-    best_other_part = max([(x, get_pressure(x, time_left, valves)) for x in all_combos], key=lambda combo: (combo[1]))
-    return part, best_other_part[0], get_pressure(part, time_left, valves) + best_other_part[1]
-
 with open(input_file, "r") as file:
-    valves = {}
+    all_valves = {}
     for line in file.readlines():
         valve, flow_rate, leads_to = extract_values(line)
-        valves[valve] = {"flow_rate": flow_rate, "leads_to": leads_to}
+        all_valves[valve] = {"flow_rate": flow_rate, "leads_to": leads_to}
     remaining_time = 30
-    print(get_best_path("AA", 30, [], valves, 0, []))
-
-    useful_valves = [k for k in valves if valves[k]["flow_rate"] > 0]
-    all_combos = [calculate_pressure(list(x), useful_valves, 26, valves) for x in permutations(useful_valves, 3)]
-    print(max(all_combos, key=lambda combo: (combo[2])))
+    best_single_path, best_score = get_best_path("AA", 30, [], all_valves, 0, [])
+    print(f"{best_single_path}, {best_score}")
+    human_path, human_sum = get_best_path("AA", 26, [], all_valves, 0, [])
+    elephant_path, elephant_sum = get_best_path("AA", 26, best_single_path, all_valves, 0, [])
+    print(elephant_path, elephant_sum, human_path, human_sum, human_sum + elephant_sum)
