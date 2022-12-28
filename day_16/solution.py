@@ -1,6 +1,5 @@
 import math
 import re
-from itertools import permutations
 
 input_file = "day_16/input.data"
 
