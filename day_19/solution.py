@@ -46,12 +46,31 @@ def mine(robots, materials, debug=False):
 def make_cache_key(goal, remaining_time, materials, robots):
     return f"{goal}|{str(remaining_time)}|{'|'.join([str(x) for x in materials.values()])}|{'|'.join([str(x) for x in robots.values()])}"
 
+def theoretical_max(remaining_time, materials, robots):
+    global theoretical_cache
+    cache_key = f"{str(remaining_time)}|{str(materials['geode'])}|{str(robots['geode'])}"
+    if cache_key in theoretical_cache:
+        return theoretical_cache[cache_key]
+    result = materials["geode"]
+    geode_robots = robots["geode"]
+    rounds = remaining_time
+    while(rounds > 0):
+        result += geode_robots
+        geode_robots += 1
+        remaining_time -= 1
+    theoretical_cache[cache_key] = result
+    return result
+
+theoretical_cache = {}
 cache = {}
+currentMax = 0
 
 def simulate_rec(costs, goal, remaining_time, materials, robots, limits):
-    global cache
+    global cache, currentMax
     if remaining_time == 0:
         return materials["geode"]
+    if theoretical_max(remaining_time, materials, robots) < currentMax:
+        return 0
     cache_key = make_cache_key(goal, remaining_time, materials, robots)
     if cache_key in cache:
         return cache[cache_key]
@@ -65,6 +84,7 @@ def simulate_rec(costs, goal, remaining_time, materials, robots, limits):
             for new_goal in TYPES:
                 tmpMax = max(tmpMax, simulate_rec(costs, new_goal, remaining_time-1, new_materials, new_robots, limits))
             new_max = max(new_max, tmpMax)
+            currentMax = max(currentMax, new_max)
             cache[cache_key] = new_max
             return new_max
         else:
@@ -72,6 +92,7 @@ def simulate_rec(costs, goal, remaining_time, materials, robots, limits):
             remaining_time -= 1
             new_max = max(new_max, materials["geode"])
     cache[cache_key] = new_max
+    currentMax = max(currentMax, new_max)
     return new_max
 
 def make_limits(costs):
@@ -81,13 +102,13 @@ def make_limits(costs):
             limits[k] = max(v, limits[k])
     return limits
 
-def get_max_geodes(costs):
+def get_max_geodes(costs, remaining_time):
     global cache
     results = []
     limits = make_limits(costs)
     cache = {}
     for start_goal in TYPES:
-        results.append(simulate_rec(costs, start_goal, 24, {"ore": 0, "clay": 0, "obsidian": 0, "geode": 0}, {"ore": 1, "clay": 0, "obsidian": 0, "geode": 0}, limits))
+        results.append(simulate_rec(costs, start_goal, remaining_time, {"ore": 0, "clay": 0, "obsidian": 0, "geode": 0}, {"ore": 1, "clay": 0, "obsidian": 0, "geode": 0}, limits))
     return max(results)
 
 with open(input_file, "r") as file:
@@ -95,9 +116,13 @@ with open(input_file, "r") as file:
     for line in file.readlines():
         number, costs = extract_values(line)
         bp[number] = costs
-    geode_result = {}
+#    result = 0
+#    for k,v in bp.items():
+#        result += k * get_max_geodes(v, 24)
+#    print(result)
+    result = 1
+    bp = {1: bp[1], 2: bp[2], 3: bp[3]}
     for k,v in bp.items():
-        geodes = get_max_geodes(v)
-        geode_result[k] = geodes
-        print(f"{k}: {geodes}")
-    print(sum([k*v for k,v in geode_result.items()]))
+        result *= get_max_geodes(v, 32)
+        print(result)
+    print(result)
