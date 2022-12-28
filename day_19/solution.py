@@ -19,55 +19,6 @@ def extract_values(line):
     costs["geode"]["obsidian"] = int(m.group(7))
     return int(m.group(1)), costs
 
-def manufacture(bp, materials, build_order, debug=False):
-    if not build_order:
-        return None
-    next = build_order[0]
-    if all([materials[k] >= v for k, v in bp[next].items()]):
-        output = "Spend "
-        expense = []
-        for m, c in bp[next].items():
-            expense.append(f"{c} {m}") 
-            materials[m] -= c
-        output += " and ".join(expense)
-        output += f" to start building a {next}-collecting robot."
-        if debug:
-            print(output)
-        build_order.remove(next)
-        return next
-    return None
-
-def mine(robots, materials, debug=False):
-    new_materials = materials.copy()
-    for t in TYPES:
-        new_materials[t] += robots[t]
-        if robots[t] > 0:
-            if debug:
-                print(f"{robots[t]} {t}-collecting robot(s) collect {robots[t]} {t}; you now have {new_materials[t]} {t}.")
-    return new_materials
-    
-
-def deliver(robots, manufactured, debug=False):
-    robots[manufactured] += 1
-    if debug:
-        print(f"The new {manufactured}-collecting robot is ready; you now have {robots[manufactured]} of them.")
-
-def simulate_blueprint(bp, build_order, debug=False):
-    remaining_time = 24
-    materials = {"ore": 0, "clay": 0, "obsidian": 0, "geode": 0}
-    robots = {"ore": 1, "clay": 0, "obsidian": 0, "geode": 0}
-    while(remaining_time > 0):
-        if debug:
-            print(f"== Minute {25 - remaining_time} ==")
-        manufactured = manufacture(bp, materials, build_order, debug)
-        mine(robots, materials, debug)
-        if manufactured:
-            deliver(robots, manufactured, debug)
-        remaining_time -= 1
-        if debug:
-            print("")
-    return materials["geode"]
-
 def can_build(costs, materials, robots, limits):
     possible = []
     for robot, rob_mats in costs.items():
@@ -83,8 +34,14 @@ def build_robot(robot_to_build, robots, cost, materials):
     new_robots[robot_to_build] += 1
     return new_robots, new_materials
 
-def no_robots(robots):
-    return sum(robots.values()) == 1
+def mine(robots, materials, debug=False):
+    new_materials = materials.copy()
+    for t in TYPES:
+        new_materials[t] += robots[t]
+        if robots[t] > 0:
+            if debug:
+                print(f"{robots[t]} {t}-collecting robot(s) collect {robots[t]} {t}; you now have {new_materials[t]} {t}.")
+    return new_materials    
 
 def make_cache_key(goal, remaining_time, materials, robots):
     return f"{goal}|{str(remaining_time)}|{'|'.join([str(x) for x in materials.values()])}|{'|'.join([str(x) for x in robots.values()])}"
@@ -143,5 +100,4 @@ with open(input_file, "r") as file:
         geodes = get_max_geodes(v)
         geode_result[k] = geodes
         print(f"{k}: {geodes}")
-    print(geode_result)
     print(sum([k*v for k,v in geode_result.items()]))
