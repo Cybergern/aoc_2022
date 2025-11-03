@@ -1,20 +1,20 @@
 input_file = "day_3/input.data"
 
-def get_priority(item):
+def get_priority(item: str) -> int:
     if (item.islower()):
         return ord(item) - 96
     else:
         return ord(item) - 38
 
-def split_line(line):
+def split_line(line: str) -> list[str]:
     half_l = len(line) // 2
     return [line[half_l:].strip(), line[:half_l].strip()]
 
-def find_intersection(list):
-    sets = [set(x) for x in list]
+def find_intersection(group: list[str]) -> str:
+    sets = [set(x) for x in group]
     return set.intersection(*sets).pop()
 
-def calc_prio(items):
+def calc_prio(items: list[str]) -> int:
     return sum([get_priority(x) for x in items])
 
 def get_common_item_priority_sum(input_file: str) -> int:

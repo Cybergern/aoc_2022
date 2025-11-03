@@ -6,4 +6,4 @@ def test_example():
 
 def test_input_data():
     assert get_common_item_priority_sum("day_3/input.data") == 7716
-    assert get_badges_priority_sum("day_3/input.data") == 2973
+    assert get_badges_priority_sum("day_3/input.data") == 2973   
