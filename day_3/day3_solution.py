@@ -1,5 +1,7 @@
 input_file = "day_3/input.data"
 
+# We can calculate priority by simply getting the ascii-value and subtracting 
+# the number before the first letter for lowercase and uppercase
 def get_priority(item: str) -> int:
     if (item.islower()):
         return ord(item) - 96
@@ -10,6 +12,8 @@ def split_line(line: str) -> list[str]:
     half_l = len(line) // 2
     return [line[half_l:].strip(), line[:half_l].strip()]
 
+# Easiest way of finding common items is to make sets out of each letter group 
+# and find the intersection of those sets.
 def find_intersection(group: list[str]) -> str:
     sets = [set(x) for x in group]
     return set.intersection(*sets).pop()

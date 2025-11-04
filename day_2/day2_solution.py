@@ -1,5 +1,7 @@
 input_file = "day_2/input.data"
 
+# Since the number of combinations here are rather few, we can just precalculate each score ahead of time
+# and map it to the resulting score for the first part and second part, respectively.
 FIRST_PART_SCORES = {"A X": 4, "A Y": 8, "A Z": 3, "B X": 1, "B Y": 5, "B Z": 9, "C X": 7, "C Y": 2, "C Z": 6}
 SECOND_PART_SCORES = {"A X": 3, "A Y": 4, "A Z": 8, "B X": 1, "B Y": 5, "B Z": 9, "C X": 2, "C Y": 6, "C Z": 7}
 

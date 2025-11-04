@@ -1,4 +1,7 @@
 
+# Just go through the list, line by line. If there is a value, add it to the sum.
+# Once we get an empty line, the sum is finished so we add it to the list. Keep going
+# until we run out of file.
 def get_calory_totals(input_file: str) -> list[int]:
     totals = []
     with open(input_file, "r") as file:
@@ -13,7 +16,6 @@ def get_calory_totals(input_file: str) -> list[int]:
         totals.append(cur)
     totals.sort()
     totals.reverse()
-    print(totals)
     return totals
 
 def get_top_calory_total(input_file: str) -> int:
